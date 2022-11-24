@@ -1,0 +1,47 @@
+@import "bootstrap.css";
+
+.layout {
+  padding: 3rem;
+}
+
+.group {
+  margin-top: 1rem;
+}
+
+.form-actions {
+  margin-top: 2rem;
+}
+
+.adj-left {
+  margin-left: 1%;
+}
+
+.user-navigation {
+  margin-top: 2rem;
+}
+
+.centered {
+  margin: 3rem auto;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.chat-group {
+  display: inline-block
+}
+
+.own-message {
+  text-align: right;
+  justify-content: right;
+  align-items: right;
+}
+
+.own-avatar {
+  padding-left: 0.5rem;
+}
+
+.avatar {
+  padding-right: 0.5rem
+}
