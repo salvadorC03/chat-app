@@ -12,10 +12,10 @@ import UserPage from "../pages/UserPage";
 import JoinChatPage from "../pages/JoinChatPage";
 import NewChatPage from "../pages/NewChatPage";
 import ChatsPage from "../pages/ChatsPage";
-import ChangePassword from "../components/ChangePassword";
-import ChangeUsername from "../components/ChangeUsername";
-import ChangeEmail from "../components/ChangeEmail";
 import ChatRoomPage from "../pages/ChatRoomPage";
+import ChangeEmailPage from "../pages/ChangeEmailPage";
+import ChangeUsernamePage from "../pages/ChangeUsernamePage";
+import ChangePasswordPage from "../pages/ChangePasswordPage";
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -32,13 +32,13 @@ export const router = createBrowserRouter(
           <Route path="/user/profile" element={<ProfilePage />} />
           <Route
             path="/user/profile/changepassword"
-            element={<ChangePassword />}
+            element={<ChangePasswordPage />}
           />
           <Route
             path="/user/profile/changeusername"
-            element={<ChangeUsername />}
+            element={<ChangeUsernamePage />}
           />
-          <Route path="/user/profile/changeemail" element={<ChangeEmail />} />
+          <Route path="/user/profile/changeemail" element={<ChangeEmailPage />} />
         </Route>
         <Route path="/*" element={<Navigate to="/home" />} />
       </Route>
