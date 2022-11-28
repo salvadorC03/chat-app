@@ -12,13 +12,14 @@ import {
   query,
   serverTimestamp,
 } from "firebase/firestore";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import "./ChatRoom.css";
 
 const ChatRoom = ({ chat, username }) => {
   const [showModal, setShowModal] = useState(false);
   const messagesRef = collection(db, `chats/${chat.id}/messages`);
   const messagesQuery = query(messagesRef, orderBy("createdAt"));
+  const messagesListRef = useRef();
 
   const [messages, loadingMessages] = useCollectionData(messagesQuery);
 
@@ -33,9 +34,8 @@ const ChatRoom = ({ chat, username }) => {
           photoURL: auth.currentUser.photoURL,
         },
       });
-    } catch (error) {
-      alert(error.message);
-    }
+      messagesListRef.current.scrollIntoView({ behavior: "smooth" });
+    } catch (error) {}
   };
 
   return (
@@ -57,10 +57,9 @@ const ChatRoom = ({ chat, username }) => {
       <div className="messages-list">
         {loadingMessages && <LoadingSpinner />}
         {messages?.map((message) => (
-          <div
-            className="message-div"
-          >
+          <div className="message-div">
             <ChatMessage key={message.createdAt} message={message} />
+            <div ref={messagesListRef}></div>
           </div>
         ))}
         <div className="message-form">

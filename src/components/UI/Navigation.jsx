@@ -10,7 +10,7 @@ const Navigation = () => {
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
       <div className="container-fluid">
         <NavLink className="navbar-brand" to="/">
-          ID Chat
+          Chat App
         </NavLink>
         <button
           className="navbar-toggler"
