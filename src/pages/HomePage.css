@@ -1,0 +1,15 @@
+.group-text {
+    margin-top: 2%;
+    margin-left: 1%;
+}
+
+@media (max-width: 760px) {
+    .group-text {
+        margin-top: 8%;
+        margin-left: 4%;
+    }
+}
+
+.chatitem-list {
+    list-style-type: none;
+}

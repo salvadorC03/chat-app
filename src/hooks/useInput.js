@@ -13,5 +13,11 @@ export const useInput = (validateFunc) => {
     setHasError(validateFunc(event.target.value));
   };
 
-  return {value, changeHandler, hasError, isValid, inputClasses, setValue, setHasError};
+  const reset = () => {
+    setValue("");
+    setIsTouched(false);
+    setHasError(false);
+  }
+
+  return {value, changeHandler, hasError, isValid, inputClasses, setValue, reset};
 };

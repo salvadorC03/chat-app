@@ -1,4 +1,4 @@
-import { useInput } from "../hooks/useInput";
+import { useInput } from "../../hooks/useInput";
 
 const NewMessageForm = (props) => {
   const message = useInput((message) => message.trim().length === 0);
@@ -11,7 +11,7 @@ const NewMessageForm = (props) => {
     }
 
     props.onSendMessage(message.value);
-    message.setValue("");
+    message.reset();
   };
 
   return (
@@ -21,10 +21,11 @@ const NewMessageForm = (props) => {
           id="message"
           className="form-control"
           value={message.value}
+          maxLength="1000"
           onChange={message.changeHandler}
         />
         <button
-          disabled={message.hasError}
+          disabled={!message.isValid}
           className="btn btn-lg btn-dark group"
         >
           Enviar mensaje

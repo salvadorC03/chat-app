@@ -1,0 +1,21 @@
+.message-form {
+    position: fixed;
+    top: 75%;
+    width: 95%;
+}
+
+.messages-list {
+    padding: 2%;
+    max-height: 40rem;
+    overflow: auto;
+}
+
+.message-div {
+    width: 95%;
+}
+
+@media (max-width: 760px) {
+    .messages-list {
+        max-height: 32rem;
+    }
+}

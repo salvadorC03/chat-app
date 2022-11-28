@@ -1,10 +1,10 @@
 const Card = (props) => {
     return (
         <div
-        {...props.attributes}
+        className={`card ${props.classes}`}
       >
-        <div {...props.headerAttributes}>{props.header}</div>
-        <div {...props.bodyAttributes}>{props.children}</div>
+        <div className="card-header">{props.header}</div>
+        <div className="card-body">{props.children}</div>
         </div>
     )
 };

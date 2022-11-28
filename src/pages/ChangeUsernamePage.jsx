@@ -1,32 +1,32 @@
-import ChangeUsernameForm from "../components/ChangeUsernameForm";
-import SuccessAlert from "./SuccessAlert";
-import ErrorAlert from "./ErrorAlert";
+import ChangeUsernameForm from "../components/UserPage/ChangeUsernameForm";
+import SuccessAlert from "../components/UI/SuccessAlert";
+import ErrorAlert from "../components/UI/ErrorAlert";
 import { auth } from "../util/firebase-config";
 import { useEffect } from "react";
 import { changeUsername } from "../util/api";
 import { useLoading } from "../hooks/useLoading";
-import { useErrorMessage } from "../util/getErrorMessage";
+import { useErrorMessage } from "../hooks/useErrorMessage";
 
 const ChangeUsernamePage = (props) => {
-    const loadingState = useLoading();
-    const getErrorMessage = useErrorMessage();
+  const loadingState = useLoading();
+  const getErrorMessage = useErrorMessage();
 
-    useEffect(() => {
-        if (!loadingState.message) {
-          return;
-        }
-    
-        const timeout = setTimeout(() => {
-          loadingState.setMessage(null);
-        }, [3000]);
-    
-        return () => {
-          clearTimeout(timeout);
-        };
-      }, [loadingState.message]);
+  useEffect(() => {
+    if (!loadingState.message) {
+      return;
+    }
 
-    const changeUsernameHandler = (newUsername, currentPassword) => {
-        loadingState.setMessage(null);
+    const timeout = setTimeout(() => {
+      loadingState.setMessage(null);
+    }, [3000]);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [loadingState.message]);
+  
+  const changeUsernameHandler = async (newUsername, currentPassword, reset) => {
+    loadingState.setMessage(null);
     loadingState.setIsLoading(true);
     try {
       await changeUsername(
@@ -40,6 +40,7 @@ const ChangeUsernamePage = (props) => {
           message="Nombre de usuario cambiado exitosamente."
         />
       );
+      reset();
     } catch (error) {
       loadingState.setMessage(
         <ErrorAlert
@@ -49,11 +50,15 @@ const ChangeUsernamePage = (props) => {
       );
     }
     loadingState.setIsLoading(false);
-    };
+  };
 
-    return (
-        <ChangeUsernameForm isLoading={loadingState.isLoading} message={loadingState.message} onSubmit={changeUsernameHandler} />
-    );
+  return (
+    <ChangeUsernameForm
+      isLoading={loadingState.isLoading}
+      message={loadingState.message}
+      onSubmit={changeUsernameHandler}
+    />
+  );
 };
 
 export default ChangeUsernamePage;

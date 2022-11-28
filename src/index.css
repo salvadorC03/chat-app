@@ -27,21 +27,3 @@
   justify-content: center;
   align-items: center;
 }
-
-.chat-group {
-  display: inline-block
-}
-
-.own-message {
-  text-align: right;
-  justify-content: right;
-  align-items: right;
-}
-
-.own-avatar {
-  padding-left: 0.5rem;
-}
-
-.avatar {
-  padding-right: 0.5rem
-}

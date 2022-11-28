@@ -1,0 +1,10 @@
+.anonymous-avatar-group {
+    margin-top: 0.3rem;
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 760px) {
+    .anonymous-avatar-group {
+        margin-left: 0.5rem;
+    }
+}

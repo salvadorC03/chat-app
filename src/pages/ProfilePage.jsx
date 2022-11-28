@@ -1,12 +1,11 @@
+import ErrorAlert from "../components/UI/ErrorAlert";
+import UserProfile from "../components/UserPage/UserProfile";
+import LoadingSpinner from "../components/UI/LoadingSpinner";
 import { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
 import { findUser } from "../util/api";
 import { useLoading } from "../hooks/useLoading";
 import { Outlet } from "react-router-dom";
-import UserProfile from "../components/UserProfile";
-import LoadingSpinner from "../components/LoadingSpinner";
 import { auth } from "../util/firebase-config";
-import ErrorAlert from "../components/ErrorAlert";
 
 const ProfilePage = () => {
   const [userData, setUserData] = useState(null);

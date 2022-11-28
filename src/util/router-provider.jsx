@@ -4,7 +4,7 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import Layout from "../components/Layout";
+import Layout from "../components/UI/Layout";
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 import ProfilePage from "../pages/ProfilePage";
@@ -16,6 +16,8 @@ import ChatRoomPage from "../pages/ChatRoomPage";
 import ChangeEmailPage from "../pages/ChangeEmailPage";
 import ChangeUsernamePage from "../pages/ChangeUsernamePage";
 import ChangePasswordPage from "../pages/ChangePasswordPage";
+import AnonymousUserPage from "../pages/AnonymousUserPage";
+import AnonymousUserProfile from "../components/UserPage/AnonymousUserProfile";
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -38,7 +40,15 @@ export const router = createBrowserRouter(
             path="/user/profile/changeusername"
             element={<ChangeUsernamePage />}
           />
-          <Route path="/user/profile/changeemail" element={<ChangeEmailPage />} />
+          <Route
+            path="/user/profile/changeemail"
+            element={<ChangeEmailPage />}
+          />
+        </Route>
+        <Route path="/anonymous" element={<AnonymousUserPage />}>
+        <Route index element={<Navigate to="/anonymous/profile" />} />
+          <Route path="/anonymous/profile" element={<AnonymousUserProfile />} />
+          <Route path="/anonymous/joinchat" element={<JoinChatPage />} />
         </Route>
         <Route path="/*" element={<Navigate to="/home" />} />
       </Route>

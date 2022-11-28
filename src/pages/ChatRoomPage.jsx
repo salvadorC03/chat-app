@@ -1,9 +1,11 @@
+import ChatRoom from "../components/ChatRoom/ChatRoom";
+import ChatPasswordForm from "../components/ChatRoom/ChatPasswordForm";
+import LoadingSpinner from "../components/UI/LoadingSpinner";
+import ErrorAlert from "../components/UI/ErrorAlert";
+import Modal from "../components/UI/Modal";
 import { collection, getDocs } from "firebase/firestore";
-import { Fragment, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams, Navigate } from "react-router-dom";
-import ChatRoom from "../components/ChatRoom";
-import LoadingSpinner from "../components/LoadingSpinner";
-import { useInput } from "../hooks/useInput";
 import { useLoading } from "../hooks/useLoading";
 import { findUser } from "../util/api";
 import { auth, AuthContext, db } from "../util/firebase-config";
@@ -16,7 +18,6 @@ const ChatRoomPage = () => {
   const [passwordEntered, setPasswordEntered] = useState(true);
   const [user, setUser] = useState(null);
   const [chatFound, setChatFound] = useState(true);
-  const password = useInput((password) => password.trim().length === 0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,23 +26,35 @@ const ChatRoomPage = () => {
     }
 
     const fetchChat = async () => {
-      loadingState.setIsLoading(true);
-      const collectionRef = collection(db, "chats");
+      try {
+        loadingState.setIsLoading(true);
+        const collectionRef = collection(db, "chats");
 
-      const chatData = await getDocs(collectionRef);
-      const chats = chatData.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-      const storedChat = chats.filter((chat) => chat.id === params.chatId);
+        const chatData = await getDocs(collectionRef);
+        const chats = chatData.docs.map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        }));
+        const storedChat = chats.filter((chat) => chat.id === params.chatId);
 
-      if (storedChat.length === 0) {
-        setChatFound(false);
-        loadingState.setIsLoading(false);
-        return;
+        if (storedChat.length === 0) {
+          setChatFound(false);
+          loadingState.setIsLoading(false);
+          return;
+        }
+
+        setChatFound(true);
+        setChat({ ...storedChat[0] });
+        if (!authCtx.currentUser.isAnonymous) {
+          const user = await findUser(auth.currentUser.email);
+          setUser(user);
+        } else {
+          const user = { username: "Usuario-Invitado" };
+          setUser(user);
+        }
+      } catch (error) {
+        loadingState.setMessage(<ErrorAlert message={error.message} />);
       }
-
-      setChatFound(true);
-      setChat({ ...storedChat[0] });
-      const user = await findUser(auth.currentUser.email);
-      setUser(user);
       loadingState.setIsLoading(false);
     };
 
@@ -63,64 +76,75 @@ const ChatRoomPage = () => {
       return;
     }
 
-    if (chat?.owner === auth.currentUser?.email) {
+    if (chat?.owner === auth.currentUser?.uid) {
       setPasswordEntered(true);
     }
-  }, [chat, auth.currentUser]);
+  }, [chat, auth.currentUser.uid]);
 
-  if (!authCtx.currentUser) {
-    return <Navigate to="/login" />;
-  }
-
-  const submitPasswordHandler = (event) => {
-    event.preventDefault();
-
-    if (password.value === chat.password) {
-      setPasswordEntered(true);
-    } else {
-      alert("La contraseña introducida no es correcta");
+  useEffect(() => {
+    if (!loadingState.message) {
+      return;
     }
+
+    const timeout = setTimeout(() => {
+      loadingState.setMessage(null);
+    }, [3000]);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [loadingState.message]);
+
+  if (!authCtx.currentUser) return <Navigate to="/login" />;
+
+  const submitPasswordHandler = (enteredPassword) => {
+    loadingState.setIsLoading(true);
+
+    setTimeout(() => {
+      if (enteredPassword === chat.password) {
+        setPasswordEntered(true);
+      } else {
+        loadingState.setMessage(
+          <ErrorAlert
+            message="La contraseña introducida no es válida."
+            onClose={() => {
+              loadingState.setMessage(null);
+            }}
+          />
+        );
+      }
+      loadingState.setIsLoading(false);
+    }, 1000);
   };
 
   return (
-    <Fragment>
+    <>
       {!chatFound ? (
-        <>
-          <h1>Chat no encontrado</h1>
+        <Modal header="Error">
+          <h3>Chat no encontrado</h3>
           <button
-            className="btn btn-primary"
+            className="btn btn-primary group"
             onClick={() => {
               navigate("/home");
             }}
           >
             Regresar
           </button>
-        </>
+        </Modal>
       ) : (
         !loadingState.isLoading &&
         chat &&
         user &&
-        passwordEntered && (
-          <ChatRoom
-            chat={chat}
-            chatId={params.chatId}
-            username={user.username}
-          />
-        )
+        passwordEntered && <ChatRoom chat={chat} username={user.username} />
       )}
       {!loadingState.isLoading && !passwordEntered && (
-        <form onSubmit={submitPasswordHandler}>
-          <p>Introducir contraseña:</p>
-          <input
-            type="text"
-            value={password.value}
-            onChange={password.changeHandler}
-          />
-          <button disabled={!password.isValid}>Aceptar</button>
-        </form>
+        <ChatPasswordForm
+          message={loadingState.message}
+          onSubmit={submitPasswordHandler}
+        />
       )}
       {loadingState.isLoading && <LoadingSpinner className="centered" />}
-    </Fragment>
+    </>
   );
 };
 

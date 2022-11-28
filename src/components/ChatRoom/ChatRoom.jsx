@@ -1,4 +1,9 @@
-import { auth, db } from "../util/firebase-config";
+import ChatNavigation from "../UI/ChatNavigation";
+import ChatMessage from "./ChatMessage";
+import NewMessageForm from "./NewMessageForm";
+import LoadingSpinner from "../UI/LoadingSpinner";
+import ChatModal from "./ChatModal";
+import { auth, db } from "../../util/firebase-config";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import {
   addDoc,
@@ -7,26 +12,15 @@ import {
   query,
   serverTimestamp,
 } from "firebase/firestore";
-import ChatNavigation from "../components/ChatNavigation";
-import ChatMessage from "../components/ChatMessage";
-import NewMessageForm from "./NewMessageForm";
-import LoadingSpinner from "./LoadingSpinner";
-import Modal from "./Modal";
 import { useState } from "react";
-import Card from "./Card";
-import { useNavigate } from "react-router-dom";
-import { signOut } from "firebase/auth";
+import "./ChatRoom.css";
 
-const ChatRoom = ({ chat, chatId, username }) => {
+const ChatRoom = ({ chat, username }) => {
   const [showModal, setShowModal] = useState(false);
-  const messagesRef = collection(db, `chats/${chatId}/messages`);
+  const messagesRef = collection(db, `chats/${chat.id}/messages`);
   const messagesQuery = query(messagesRef, orderBy("createdAt"));
-  const navigate = useNavigate();
-  //const activeUsersQuery = collection(db, `chats/${params.chatId}/activeUsers`);
 
-  const [messages, loadingMessages, errorMessages] =
-    useCollectionData(messagesQuery);
-  //const [users, loadingUsers, errorUsers] = useCollectionData(activeUsersQuery);
+  const [messages, loadingMessages] = useCollectionData(messagesQuery);
 
   const sendMessageHandler = async (message) => {
     try {
@@ -34,7 +28,7 @@ const ChatRoom = ({ chat, chatId, username }) => {
         text: message,
         createdAt: serverTimestamp(),
         sender: {
-          email: auth.currentUser.email,
+          uid: auth.currentUser.uid,
           username: username,
           photoURL: auth.currentUser.photoURL,
         },
@@ -47,37 +41,12 @@ const ChatRoom = ({ chat, chatId, username }) => {
   return (
     <>
       {showModal && (
-        <Modal
+        <ChatModal
+          chat={chat}
           onClose={() => {
             setShowModal(false);
           }}
-        >
-          <Card
-            header="Inicio"
-            attributes={{
-              className: "card border-secondary mb-3 ",
-            }}
-            headerAttributes={{ className: "card-header" }}
-            bodyAttributes={{ className: "card-body" }}
-          >
-            <button
-              className="btn btn-primary"
-              onClick={() => {
-                navigate("/user/profile");
-              }}
-            >
-              Salir del chat
-            </button>
-            <button
-              className="btn btn-primary"
-              onClick={() => {
-                setShowModal(false);
-              }}
-            >
-              Cerrar menu
-            </button>
-          </Card>
-        </Modal>
+        />
       )}
       <ChatNavigation
         onClick={() => {
@@ -85,19 +54,16 @@ const ChatRoom = ({ chat, chatId, username }) => {
         }}
         chat={chat}
       />
-      <div style={{ padding: "2%", maxHeight: "35rem", overflow: "auto" }}>
+      <div className="messages-list">
         {loadingMessages && <LoadingSpinner />}
-        {showModal && <Modal />}
         {messages?.map((message) => (
           <div
-            style={{
-              width: "95%",
-            }}
+            className="message-div"
           >
             <ChatMessage key={message.createdAt} message={message} />
           </div>
         ))}
-        <div style={{ position: "fixed", top: "75%", width: "95%" }}>
+        <div className="message-form">
           <NewMessageForm onSendMessage={sendMessageHandler} />
         </div>
       </div>

@@ -1,0 +1,32 @@
+.chat-group {
+    display: inline-block;
+  }
+
+  .message {
+    padding-bottom: 1rem;
+  }
+  
+  .own-message {
+    text-align: right;
+    justify-content: right;
+    align-items: right;
+  }
+  
+  .own-avatar {
+    padding-left: 0.5rem;
+  }
+  
+  .avatar {
+    padding-right: 0.5rem;
+  }
+
+  .message-text {
+    max-width: 50rem;
+    word-wrap: break-word;
+  }
+
+  @media (max-width: 760px) {
+    .message-text {
+      max-width: 10rem;
+    }
+  }

@@ -1,0 +1,9 @@
+.file-input {
+    width: 30%;
+}
+
+@media (max-width: 760px) {
+    .file-input {
+        width: 100%;
+    }
+}

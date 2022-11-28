@@ -1,8 +1,8 @@
-import { useEffect } from "react";
-import { useState } from "react";
-import { auth } from "../util/firebase-config";
 import Avatar from "@mui/material/Avatar";
 import ChangeProfilePicture from "./ChangeProfilePicture";
+import { useEffect } from "react";
+import { useState } from "react";
+import { auth } from "../../util/firebase-config";
 
 const UserProfilePicture = () => {
   const [changingPicture, setChangingPicture] = useState(false);
@@ -21,7 +21,10 @@ const UserProfilePicture = () => {
       />
       {changingPicture ? (
         <>
-          <ChangeProfilePicture setChangingPicture={setChangingPicture} setPhotoURL={setPhotoURL} />
+          <ChangeProfilePicture
+            setChangingPicture={setChangingPicture}
+            setPhotoURL={setPhotoURL}
+          />
         </>
       ) : (
         <button

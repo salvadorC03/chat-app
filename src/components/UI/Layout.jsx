@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 import { Fragment } from "react";
 import Navigation from "./Navigation";
 
-const Layout = (props) => {
+const Layout = () => {
   return (
     <Fragment>
       <Navigation />

@@ -1,0 +1,8 @@
+@media (max-width: 760px) {
+    #adjustSize {
+        display: block;
+        height: 8rem;
+        font-size: 15px;
+        overflow: scroll;
+    }
+}

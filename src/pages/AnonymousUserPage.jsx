@@ -1,14 +1,15 @@
-import UserNavigation from "../components/UI/UserNavigation";
 import Card from "../components/UI/Card";
+import UserNavigation from "../components/UI/UserNavigation";
 import { useContext } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { AuthContext } from "../util/firebase-config";
 import "./UserPage.css";
 
-const UserPage = () => {
+const AnonymousUserPage = () => {
   const authCtx = useContext(AuthContext);
+
   if (!authCtx.currentUser) return <Navigate to="/login" />;
-  if (authCtx.currentUser.isAnonymous) return <Navigate to="/anonymous" />;
+  if (!authCtx.currentUser.isAnonymous) return <Navigate to="/user/profile" />;
 
   return (
     <>
@@ -20,4 +21,4 @@ const UserPage = () => {
   );
 };
 
-export default UserPage;
+export default AnonymousUserPage;

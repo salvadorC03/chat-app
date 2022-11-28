@@ -1,23 +1,29 @@
+import LoadingSpinner from "./components/UI/LoadingSpinner";
 import { useEffect } from "react";
 import { RouterProvider } from "react-router-dom";
-import LoadingSpinner from "./components/LoadingSpinner";
 import { useInitialLoad } from "./hooks/useInitialLoad";
 import { router } from "./util/router-provider";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./util/firebase-config";
 
 function App() {
   const [initialLoadState, setInitialLoadState] = useInitialLoad();
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
+    onAuthStateChanged(auth, () => {
       setInitialLoadState(false);
-    }, 2000);
+    });
+  }, []);
 
-    return () => {
-      clearTimeout(timeout);
-    }
-  }, [])
-
-  return <>{!initialLoadState ? <RouterProvider router={router} /> : <LoadingSpinner />}</>;
+  return (
+    <>
+      {!initialLoadState ? (
+        <RouterProvider router={router} />
+      ) : (
+        <LoadingSpinner />
+      )}
+    </>
+  );
 }
 
 export default App;

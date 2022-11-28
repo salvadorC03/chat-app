@@ -1,11 +1,13 @@
-import { useInput } from "../hooks/useInput";
-import { Fragment, useState } from "react";
-import Input from "./Input";
-import LoadingSpinner from "./LoadingSpinner";
-import Card from "./Card";
+import Input from "../UI/Input";
+import LoadingSpinner from "../UI/LoadingSpinner";
+import { useInput } from "../../hooks/useInput";
+import { useState } from "react";
+import "./LoginForm.css";
 
 const LoginForm = (props) => {
-  const email = useInput((email) => email.trim().length === 0 || !email.includes("@"));
+  const email = useInput(
+    (email) => email.trim().length === 0 || !email.includes("@")
+  );
   const password = useInput((password) => password.trim().length < 6);
   const username = useInput((username) => username.trim().length === 0);
 
@@ -22,25 +24,27 @@ const LoginForm = (props) => {
 
   const submitHandler = (event) => {
     event.preventDefault();
-    props.onSubmit({ email: email.value, password: password.value, isRegistering, username: username.value });
+
+    if (!formIsValid) {
+      return;
+    }
+
+    props.onSubmit({
+      email: email.value,
+      password: password.value,
+      isRegistering,
+      username: username.value,
+    });
   };
 
   return (
-    <Card
-      header="Inicio"
-      attributes={{
-        className: "card text-white bg-primary mb-3",
-        style: { maxWidth: "30rem" },
-      }}
-      headerAttributes={{ className: "card-header" }}
-      bodyAttributes={{ className: "card-body" }}
-    >
+    <>
       <h2 className="card-title">
         {!isRegistering ? "Iniciar Sesión:" : "Crear nueva cuenta:"}
       </h2>
       <form onSubmit={submitHandler}>
         <Input
-          fieldsetClass="col-sm-10"
+          fieldsetClass="input"
           id="email"
           label="Correo Electrónico"
           attributes={{
@@ -52,7 +56,7 @@ const LoginForm = (props) => {
         />
         {email.hasError && "Por favor introduce una dirección e-mail válida"}
         <Input
-          fieldsetClass="col-sm-10"
+          fieldsetClass="input"
           id="password"
           label="Contraseña:"
           attributes={{
@@ -62,11 +66,12 @@ const LoginForm = (props) => {
             onChange: password.changeHandler,
           }}
         />
-        {password.hasError && "Por favor introduce una contraseña válida (mínimo 6 caracteres)"}
+        {password.hasError &&
+          "Por favor introduce una contraseña válida (mínimo 6 caracteres)"}
         {isRegistering && (
-          <Fragment>
+          <>
             <Input
-              fieldsetClass="col-sm-10"
+              fieldsetClass="input"
               id="username"
               label="Nombre de usuario:"
               attributes={{
@@ -78,13 +83,12 @@ const LoginForm = (props) => {
             />
             {username.hasError &&
               "Por favor introduce un nombre de usuario válido"}
-          </Fragment>
+          </>
         )}
         {!props.isLoading && props.message && <div>{props.message}</div>}
         {!props.isLoading && (
           <button
-            className="btn btn-success btn-lg group col-sm-12"
-            style={{ marginTop: "2rem" }}
+            className="btn button btn-success btn-lg group submit"
             type="submit"
             disabled={!formIsValid}
           >
@@ -98,7 +102,7 @@ const LoginForm = (props) => {
         </div>
       ) : (
         <button
-          className="btn btn-secondary group col-sm-12"
+          className="btn button btn-secondary group"
           onClick={changeModeHandler}
         >
           {!isRegistering
@@ -106,7 +110,7 @@ const LoginForm = (props) => {
             : "Usar una cuenta existente"}
         </button>
       )}
-    </Card>
+    </>
   );
 };
 

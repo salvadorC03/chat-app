@@ -1,0 +1,19 @@
+.loginCard {
+  width: 30rem;
+}
+
+@media (max-width: 760px) {
+  .loginCard {
+    width: 100%;
+  }
+}
+
+.extra-actions {
+  margin: 0.5rem auto;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  color: white;
+}

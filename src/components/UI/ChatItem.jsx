@@ -1,22 +1,23 @@
 import { deleteDoc, doc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
-import { db } from "../util/firebase-config";
+import { db } from "../../util/firebase-config";
+import "./ChatItem.css";
 
-const ChatItem = ({ chat }) => {
+const ChatItem = ({ chat, isOwner }) => {
   const navigate = useNavigate();
 
   return (
     <li
       className="toast show"
+      id="chat-item"
       role="alert"
       aria-live="assertive"
       aria-atomic="true"
-      style={{ marginTop: "2rem", width: "70%" }}
     >
       <div className="toast-header">
         <strong className="me-auto">Chat</strong>
       </div>
-      <div class="toast-body">
+      <div class="toast-body chat-item-body">
         <table className="table table-hover">
           <thead>
             <tr>
@@ -32,8 +33,10 @@ const ChatItem = ({ chat }) => {
               <td>{chat.name}</td>
               <td>
                 {chat.hasPassword
-                  ? chat.password
-                  : "Este chat no tiene contraseña"}
+                  ? isOwner
+                    ? chat.password
+                    : "Este chat tiene contraseña"
+                  : "Sin contraseña"}
               </td>
               <td>
                 {chat.isPublic
@@ -50,16 +53,18 @@ const ChatItem = ({ chat }) => {
                   Unirse al chat
                 </button>
               </td>
-              <td>
-                <button
-                  className="btn btn-dark"
-                  onClick={async () => {
-                    await deleteDoc(doc(db, "chats", chat.id));
-                  }}
-                >
-                  Borrar chat
-                </button>
-              </td>
+              {isOwner && (
+                <td>
+                  <button
+                    className="btn btn-dark"
+                    onClick={async () => {
+                      await deleteDoc(doc(db, "chats", chat.id));
+                    }}
+                  >
+                    Borrar chat
+                  </button>
+                </td>
+              )}
             </tr>
           </tbody>
         </table>

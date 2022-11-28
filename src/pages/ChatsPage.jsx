@@ -1,17 +1,17 @@
+import LoadingSpinner from "../components/UI/LoadingSpinner";
+import ChatItem from "../components/UI/ChatItem";
+import ErrorAlert from '../components/UI/ErrorAlert'
+import { useNavigate } from "react-router-dom";
 import { collection, query, where } from "firebase/firestore";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { auth, db } from "../util/firebase-config";
-import LoadingSpinner from "../components/LoadingSpinner";
-import { useNavigate } from "react-router-dom";
-import ChatItem from "../components/ChatItem";
-import ErrorAlert from '../components/ErrorAlert'
 
 const ChatsPage = () => {
   const navigate = useNavigate();
   const chatsRef = collection(db, "chats");
   const chatsQuery = query(
     chatsRef,
-    where("owner", "==", auth.currentUser.email)
+    where("owner", "==", auth.currentUser.uid)
   );
 
   const [chats, loading, error] = useCollectionData(chatsQuery);
@@ -24,7 +24,7 @@ const ChatsPage = () => {
       {!loading && !error && chats?.length === 0 && <p className="group">No hay chats disponibles.</p>}
       {!loading && chats?.length > 0 && <ul style={{ listStyleType: "none" }}>
         {chats?.map((chat) => (
-          <ChatItem key={chat.id} chat={chat} onClick={() => {navigate("/chat/" + chat.id)}} />
+          <ChatItem isOwner={true} key={chat.id} chat={chat} onClick={() => {navigate("/chat/" + chat.id)}} />
         ))}
       </ul>}
     </div>

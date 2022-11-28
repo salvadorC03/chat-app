@@ -1,6 +1,6 @@
-import ChangeEmailForm from "../components/ChangeEmailForm";
-import SuccessAlert from "../components/SuccessAlert";
-import ErrorAlert from "../components/ErrorAlert";
+import ChangeEmailForm from "../components/UserPage/ChangeEmailForm";
+import SuccessAlert from "../components/UI/SuccessAlert";
+import ErrorAlert from "../components/UI/ErrorAlert";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../util/firebase-config";
 import { useErrorMessage } from "../hooks/useErrorMessage";
@@ -26,14 +26,15 @@ const ChangeEmailPage = () => {
     };
   }, [loadingState.message]);
 
-  const changeEmailHandler = async (newEmail, currentPassword) => {
+  const changeEmailHandler = async (newEmail, currentPassword, reset) => {
     loadingState.setMessage(null);
     loadingState.setIsLoading(true);
     try {
       await signInWithEmailAndPassword(
         auth,
         auth.currentUser.email,
-        currentPassword
+        currentPassword,
+        reset
       );
       await changeEmail(auth.currentUser, newEmail, currentPassword);
       loadingState.setMessage(
@@ -42,6 +43,7 @@ const ChangeEmailPage = () => {
           message="Correo electrónico cambiado exitosamente."
         />
       );
+      reset();
     } catch (error) {
       loadingState.setMessage(
         <ErrorAlert

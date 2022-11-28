@@ -1,0 +1,18 @@
+#chat-item {
+  margin-top: 2rem;
+  width: 70%;
+}
+
+@media (max-width: 760px) {
+  #chat-item {
+    width: 90%;
+  }
+}
+
+.chat-item-body {
+    overflow: auto;
+}
+
+#chat-item th {
+    width: 20%;
+}

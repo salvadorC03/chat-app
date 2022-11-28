@@ -1,0 +1,9 @@
+.userPage {
+    width: 80%;
+}
+
+@media (max-width: 760px) {
+    .userPage {
+        width: 100%;
+    }
+}

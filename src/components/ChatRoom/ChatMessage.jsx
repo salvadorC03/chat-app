@@ -1,14 +1,15 @@
 import Avatar from "@mui/material/Avatar";
-import { auth } from "../util/firebase-config";
+import { auth } from "../../util/firebase-config";
+import "./ChatMessage.css";
 
 const ChatMessage = ({ message }) => {
   const messageClasses =
-    auth.currentUser.email === message?.sender.email
+    auth.currentUser.uid === message?.sender.uid
       ? "alert alert-info"
       : "alert alert-success";
 
   const avatarClasses =
-    auth.currentUser.email === message?.sender.email ? "own-avatar" : "avatar";
+    auth.currentUser.uid === message?.sender.uid ? "own-avatar" : "avatar";
 
   const avatar = (
     <div className={`chat-group ${avatarClasses}`}>
@@ -21,21 +22,18 @@ const ChatMessage = ({ message }) => {
   );
 
   return (
-        <div
-          className={`${
-            auth.currentUser.email === message?.sender.email && "own-message"
-          }`}
-          style={{ paddingBottom: "1rem" }}
-        >
-          {auth.currentUser.email !== message?.sender.email && avatar}
-          <div className="chat-group">
-            <h6>{message.sender.username}:</h6>
-            <p className={messageClasses} style={{ maxWidth: "50rem" }}>
-              {message.text}
-            </p>
-          </div>
-          {auth.currentUser.email === message?.sender.email && avatar}
-        </div>
+    <div
+      className={`message ${
+        auth.currentUser.uid === message?.sender.uid && "own-message"
+      }`}
+    >
+      {auth.currentUser.uid !== message?.sender.uid && avatar}
+      <div className="chat-group">
+        <h6>{message.sender.username}:</h6>
+        <p className={`message-text ${messageClasses}`}>{message.text}</p>
+      </div>
+      {auth.currentUser.uid === message?.sender.uid && avatar}
+    </div>
   );
 };
 
