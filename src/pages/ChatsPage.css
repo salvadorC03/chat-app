@@ -1,0 +1,22 @@
+.group-button {
+    margin-left: 1rem;
+}
+
+.small-chat-item {
+    width: 90%;
+}
+
+.saved-chats-list {
+    padding-bottom: 1rem;
+}
+
+.no-chats-found-text {
+    margin-top: 1rem;
+    margin-left: 1rem;
+}
+
+@media (max-width: 760px) {
+    .small-chat-item {
+        width: 100%;
+    }
+}

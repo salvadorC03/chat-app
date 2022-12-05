@@ -13,3 +13,15 @@
 .modal-info span {
     display: block;
 }
+
+.details-list {
+    padding-left: 3%;
+}
+
+.group-sm {
+    margin-top: 0.5rem;
+}
+
+.save-chat {
+    width: 13rem;
+}

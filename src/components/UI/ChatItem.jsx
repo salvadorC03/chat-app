@@ -1,11 +1,6 @@
-import { deleteDoc, doc } from "firebase/firestore";
-import { useNavigate } from "react-router-dom";
-import { db } from "../../util/firebase-config";
 import "./ChatItem.css";
 
-const ChatItem = ({ chat, isOwner }) => {
-  const navigate = useNavigate();
-
+const ChatItem = ({ chat, isOwner, onJoin, onDelete, isDeletable }) => {
   return (
     <li
       className="toast show"
@@ -24,7 +19,7 @@ const ChatItem = ({ chat, isOwner }) => {
               <th scope="col">ID</th>
               <th scope="col">Nombre</th>
               <th scope="col">Contraseña</th>
-              <th scope="col">Visibilidad</th>
+              {isOwner && <th scope="col">Visibilidad</th>}
             </tr>
           </thead>
           <tbody>
@@ -38,28 +33,26 @@ const ChatItem = ({ chat, isOwner }) => {
                     : "Este chat tiene contraseña"
                   : "Sin contraseña"}
               </td>
-              <td>
-                {chat.isPublic
-                  ? "Este chat es público"
-                  : "Este chat es privado"}
-              </td>
+              {isOwner && (
+                <td>
+                  {chat.isPublic
+                    ? "Este chat es público"
+                    : "Este chat es privado"}
+                </td>
+              )}
               <td>
                 <button
                   className="btn btn-dark"
-                  onClick={() => {
-                    navigate("/chat/" + chat.id);
-                  }}
+                  onClick={onJoin}
                 >
                   Unirse al chat
                 </button>
               </td>
-              {isOwner && (
+              {isDeletable && (
                 <td>
                   <button
                     className="btn btn-dark"
-                    onClick={async () => {
-                      await deleteDoc(doc(db, "chats", chat.id));
-                    }}
+                    onClick={onDelete}
                   >
                     Borrar chat
                   </button>

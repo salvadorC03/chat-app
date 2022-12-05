@@ -20,6 +20,8 @@ const ChatRoomPage = () => {
   const [chatFound, setChatFound] = useState(true);
   const navigate = useNavigate();
 
+  if (!authCtx.currentUser) return <Navigate to="/login" />;
+
   useEffect(() => {
     if (!authCtx.currentUser) {
       return;
@@ -95,7 +97,6 @@ const ChatRoomPage = () => {
     };
   }, [loadingState.message]);
 
-  if (!authCtx.currentUser) return <Navigate to="/login" />;
 
   const submitPasswordHandler = (enteredPassword) => {
     loadingState.setIsLoading(true);

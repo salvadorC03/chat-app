@@ -32,8 +32,7 @@ export async function createUsername(email, password, username) {
     if (usernameExists) {
       throw new Error("USERNAME_EXISTS");
     }
-    const doc = await addDoc(collectionRef, { email, password, username });
-    return doc;
+    await addDoc(collectionRef, { email, password, username });
   } catch (error) {
     throw new Error(error.message);
   }
@@ -45,7 +44,6 @@ export async function findUser(email) {
     const users = userData.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
 
     const storedUser = users.filter((user) => user.email === email);
-    console.log(storedUser);
 
     return {
       id: storedUser[0].id,
