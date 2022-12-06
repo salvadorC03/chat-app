@@ -16,13 +16,13 @@ function App() {
   }, []);
 
   return (
-    <>
+    <div>
       {!initialLoadState ? (
         <RouterProvider router={router} />
       ) : (
         <LoadingSpinner />
       )}
-    </>
+    </div>
   );
 }
 
