@@ -58,7 +58,7 @@ const ChatModal = ({ chat, onClose, addActiveUser }) => {
       loadingState.setMessage(
         <ErrorAlert
           message={getErrorMessage(error.message)}
-          onClose={() => setErrorMessage(null)}
+          onClose={() => loadingState.setMessage(null)}
         />
       );
     }

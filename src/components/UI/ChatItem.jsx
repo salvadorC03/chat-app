@@ -12,7 +12,7 @@ const ChatItem = ({ chat, isOwner, onJoin, onDelete, isDeletable }) => {
       <div className="toast-header">
         <strong className="me-auto">Chat</strong>
       </div>
-      <div class="toast-body chat-item-body">
+      <div className="toast-body chat-item-body">
         <table className="table table-hover">
           <thead>
             <tr>

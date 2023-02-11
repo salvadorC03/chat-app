@@ -5,7 +5,8 @@ import LoadingSpinner from "../UI/LoadingSpinner";
 import ChatModal from "./ChatModal";
 import ErrorAlert from "../UI/ErrorAlert";
 import { useErrorMessage } from "../../hooks/useErrorMessage";
-import { auth, db } from "../../util/firebase-config";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { auth, db, storage } from "../../util/firebase-config";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import {
   addDoc,
@@ -22,9 +23,14 @@ import { useEffect, useRef, useState } from "react";
 import { useBeforeunload } from "react-beforeunload";
 import { useLoading } from "../../hooks/useLoading";
 import "./ChatRoom.css";
+import ImageModal from "./ImageModal";
 
 const ChatRoom = ({ chat, username }) => {
   const { message, setMessage } = useLoading();
+
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [imageModalSrc, setImageModalSrc] = useState("");
+  
   const [showModal, setShowModal] = useState(false);
   const getErrorMessage = useErrorMessage();
 
@@ -89,6 +95,16 @@ const ChatRoom = ({ chat, username }) => {
     return () => clearTimeout(timeout);
   }, [message]);
 
+  const openImageHandler = (src) => {
+    setImageModalSrc(src);
+    setShowImageModal(true);
+  };
+
+  const closeImageHandler = () => {
+    setShowImageModal(false);
+    setImageModalSrc("");
+  };
+
   const sendMessageHandler = async (message) => {
     try {
       await addDoc(messagesRef, {
@@ -107,8 +123,84 @@ const ChatRoom = ({ chat, username }) => {
     }
   };
 
+  const sendRecordHandler = async (URL) => {
+    try {
+      const data = await fetch(URL);
+      const blob = await data.blob();
+
+      const file = new File([blob], "file.wav", {type: "audio/x-wav"});
+
+      const recordRef = ref(
+        storage,
+        `chats/${chat.id}/recordings/${auth.currentUser.uid}${file.lastModified}.wav`
+      );
+      await uploadBytes(recordRef, file);
+      const recordURL = await getDownloadURL(recordRef);
+
+      await addDoc(messagesRef, {
+        type: "RECORD",
+        src: recordURL,
+        createdAt: serverTimestamp(),
+        sender: {
+          uid: auth.currentUser.uid,
+          username: username,
+          photoURL: auth.currentUser.photoURL,
+        },
+      });
+      await addActiveUser();
+      messagesListRef.current.scrollIntoView({ behavior: "smooth" });
+    } catch (error) {
+      setMessage(<ErrorAlert setMessage={getErrorMessage(error.message)} />);
+    }
+  };
+
+  const sendPictureHandler = async (event) => {
+    try {
+      const file = event.target.files[0];
+
+      if (!file) {
+        return;
+      }
+
+      if (!file.type.includes("image")) {
+        throw new Error("El archivo seleccionado no es válido");
+      }
+
+      const imageRef = ref(
+        storage,
+        `chats/${chat.id}/pictures/${auth.currentUser.uid}${file.lastModified}`
+      );
+      await uploadBytes(imageRef, file);
+      const photoURL = await getDownloadURL(imageRef);
+
+      await addDoc(messagesRef, {
+        type: "PICTURE",
+        src: photoURL,
+        createdAt: serverTimestamp(),
+        sender: {
+          uid: auth.currentUser.uid,
+          username: username,
+          photoURL: auth.currentUser.photoURL,
+        },
+      });
+      await addActiveUser();
+      messagesListRef.current.scrollIntoView({ behavior: "smooth" });
+
+    } catch (error) {
+      loadingState.setMessage(
+        <ErrorAlert
+          onClose={() => {
+            loadingState.setMessage(null);
+          }}
+          message={getErrorMessage(error.message)}
+        />
+      );
+    }
+  };
+
   return (
     <>
+    {showImageModal && <ImageModal src={imageModalSrc} onClose={closeImageHandler} />}
       {showModal && (
         <ChatModal
           chat={chat}
@@ -127,14 +219,14 @@ const ChatRoom = ({ chat, username }) => {
       <div className="messages-list">
         {loadingMessages && <LoadingSpinner />}
         {messages?.map((message) => (
-          <div className="message-div">
-            <ChatMessage key={message.createdAt} message={message} />
+          <div key={message.createdAt} className="message-div">
+            <ChatMessage message={message} onOpenImage={openImageHandler} />
             <div ref={messagesListRef}></div>
           </div>
         ))}
         {message && <div>{message}</div>}
         <div className="message-form">
-          <NewMessageForm onSendMessage={sendMessageHandler} />
+          <NewMessageForm onSendMessage={sendMessageHandler} onSendRecord={sendRecordHandler} onSendPicture={sendPictureHandler} />
         </div>
       </div>
     </>

@@ -120,9 +120,8 @@ const ChatsPage = () => {
           {savedChats.length > 0 && (
             <ul className="saved-chats-list">
               {savedChats?.map((chat) => (
-                <div className="small-chat-item">
+                <div key={chat.id} className="small-chat-item">
                   <ChatItem
-                    key={chat.id}
                     chat={chat}
                     isDeletable={true}
                     onJoin={() => {

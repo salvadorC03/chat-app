@@ -15,7 +15,6 @@ function HomePage() {
   const [chats, loading] = useCollectionData(chatsQuery);
   const { message, setMessage } = useLoading();
 
-
   return (
     <main>
       <h2>Página principal</h2>

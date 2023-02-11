@@ -1,32 +1,41 @@
 .chat-group {
-    display: inline-block;
-  }
+  display: inline-block;
+}
 
-  .message {
-    padding-bottom: 1rem;
-  }
-  
-  .own-message {
-    text-align: right;
-    justify-content: right;
-    align-items: right;
-  }
-  
-  .own-avatar {
-    padding-left: 0.5rem;
-  }
-  
-  .avatar {
-    padding-right: 0.5rem;
-  }
+.message {
+  padding-bottom: 1rem;
+}
 
+.own-message {
+  text-align: right;
+  justify-content: right;
+  align-items: right;
+}
+
+.own-avatar {
+  padding-left: 0.5rem;
+}
+
+.avatar {
+  padding-right: 0.5rem;
+}
+
+.message-text {
+  max-width: 50rem;
+  word-wrap: break-word;
+}
+
+.chat-image {
+  max-height: 10rem;
+  cursor: pointer;
+}
+
+@media (max-width: 760px) {
   .message-text {
-    max-width: 50rem;
-    word-wrap: break-word;
+    max-width: 10rem;
   }
 
-  @media (max-width: 760px) {
-    .message-text {
-      max-width: 10rem;
-    }
+  audio {
+    max-width: 15rem;
   }
+}
